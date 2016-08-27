@@ -8,7 +8,9 @@ var Engine = Matter.Engine,
   MouseConstraint = Matter.MouseConstraint,
   Body = Matter.Body,
   Bodies = Matter.Bodies,
-  Constraint = Matter.Constraint;
+  Constraint = Matter.Constraint,
+  Events = Matter.Events,
+  Common = Matter.Common;
 
 // create an engine
 var engine = Engine.create();

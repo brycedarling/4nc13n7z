@@ -39,11 +39,10 @@ function getRowBodies(bodies, rowIndex) {
   }
   return row;
 }
-//
+
 // (function render() {
-//
 //   window.requestAnimationFrame(render);
-//   //
+//
 //   context.fillStyle = '#eee';
 //   context.fillRect(0, 0, canvas.width, canvas.height);
 //
