@@ -10,7 +10,7 @@ class Game {
 
     const world = this.world = engine.world;
 
-    this.render = Matter.Render.create({
+    const render = this.render = Matter.Render.create({
       element: document.body,
       engine: engine,
       options: {
@@ -19,6 +19,8 @@ class Game {
         wireframes: false
       }
     });
+
+    Matter.Events.on(render, 'afterRender', this.afterRender.bind(this));
 
     this.keyboard = new Keyboard(this);
 
@@ -39,5 +41,20 @@ class Game {
     Matter.Engine.run(this.engine);
 
     Matter.Render.run(this.render);
+  }
+
+  afterRender(e) {
+    if (this.playAlienHitImpactAt) {
+      alienHitImpactSprite.x = this.playAlienHitImpactAt.x;
+      alienHitImpactSprite.y = this.playAlienHitImpactAt.y;
+
+      alienHitImpactSprite.update();
+      alienHitImpactSprite.render(this.render.context);
+
+      if (alienHitImpactSprite.isDone()) {
+        alienHitImpactSprite.frameIndex = 0;
+        this.playAlienHitImpactAt = null;
+      }
+    }
   }
 }

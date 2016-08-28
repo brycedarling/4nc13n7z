@@ -102,7 +102,9 @@ class Net {
       console.log('play kill at', data.position)
       Matter.World.remove(game.world, victim.headConstraint);
     } else {
-      console.log('play impact at', data.position)
+      console.log('play impact at', data.position);
+      // TODO: alien or dino impact?
+      game.playAlienHitImpactAt = data.position;
     }
   }
 
