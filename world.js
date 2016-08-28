@@ -1,4 +1,4 @@
-// const Matter = require('./matter');
+'use strict';
 
 class World {
   constructor() {
