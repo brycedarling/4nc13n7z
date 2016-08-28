@@ -96,7 +96,14 @@ class Net {
 
     const victim = game.entities[parseInt(data.victim)];
 
-    Matter.World.remove(game.world, victim.headConstraint);
+    victim.health -= data.damage;
+
+    if (victim.health <= 0) {
+      console.log('play kill at', data.position)
+      Matter.World.remove(game.world, victim.headConstraint);
+    } else {
+      console.log('play impact at', data.position)
+    }
   }
 
   // TODO: for periodic syncing

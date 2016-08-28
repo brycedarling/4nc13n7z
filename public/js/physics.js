@@ -60,14 +60,35 @@ class Physics {
         pair.bodyA.playerId != pair.bodyB.playerId) {
         if (pair.bodyA.playerId != playerId || pair.bodyB.playerId != playerId) {
           // if ((pair.bodyA.isHand || pair.bodyB.isHand) && (pair.bodyA.isHead || pair.bodyB.isHead)) {
-          var victimId = pair.bodyA.playerId != playerId ? pair.bodyA.playerId : pair.bodyB.playerId;
 
-          console.log("ATTACK!!!11", playerId, victimId)
+          // window.bodyA = pair.bodyA;
+          // window.bodyB = pair.bodyB;
+
+          var victimBody = pair.bodyA.playerId == playerId ? pair.bodyB : pair.bodyA;
+
+          var victimId = victimBody.playerId;
+
+          var position = {
+            x: victimBody.position.x,
+            y: victimBody.position.y
+          };
+
+          var attackSpeed = player.arm.bodies[3].speed;
+
+          // Min damage 50, max damage 250
+          var damage = Math.max(Math.min(4 * attackSpeed, 250), 50);
+
+          // TODO: must be head to hand attack to knock the head off
+          // TODO: hand to head attack does a damage multiplier also? aka headshot
+
+          console.log("ATTACK!!!11", playerId, victimId, damage)
 
           if (game && game.net && game.net.socket && game.net.socket.connected) {
             game.net.socket.emit('attack', {
               attacker: playerId,
-              victim: victimId
+              victim: victimId,
+              damage: damage,
+              position: position
             });
           }
 

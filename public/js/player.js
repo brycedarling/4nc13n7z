@@ -6,6 +6,8 @@ class Player {
 
     this.id = options.id;
 
+    this.health = 1000;
+
     this.isMovingLeft = false;
     this.isMovingRight = false;
     this.isJumping = false;
