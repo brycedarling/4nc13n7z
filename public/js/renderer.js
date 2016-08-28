@@ -1,7 +1,12 @@
 // create a renderer
 var render = Render.create({
   element: document.body,
-  engine: engine
+  engine: engine,
+  options: {
+    // background: '/images/BackgroundMoodConcept1.png',
+    showAngleIndicator: false,
+    wireframes: false
+  }
 });
 
 var canvas = render.canvas;

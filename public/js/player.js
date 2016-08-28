@@ -1,23 +1,24 @@
 class Player {
-  constructor() {
+  constructor(options) {
+    options = options || {};
+
+    this.id = options.id;
+
     // states
     this.isMovingLeft = false;
     this.isMovingRight = false;
     this.isJumping = false;
 
-    this.createBodies()
+    this.createBodies(options)
   }
 
-  createBodies() {
+  createBodies(options) {
     // create soft bodies
     var particleOptions = {
       friction: 0.05,
       frictionStatic: 0.1,
       render: {
-        visible: true,
-        sprite: {
-          texture: 'images/dino.png'
-        }
+        visible: true
       }
     };
 
@@ -26,8 +27,8 @@ class Player {
     var columnGap = 0;
     var rowGap = 0;
     var particleRadius = 20;
-    var x = 250;
-    var y = 250;
+    var x = options.x || 0;
+    var y = options.y || 0;
     var width = 120;
     var height = 100;
     var torsoHeight = rows * particleRadius;
@@ -35,10 +36,29 @@ class Player {
     var torso = this.torso = Composites.softBody(x, y, columns, rows, columnGap, rowGap, true, particleRadius, particleOptions);
 
     var legs = this.legs = Bodies.rectangle(x + width / 2, 60 + (y + height) + torsoHeight, width, height, {
-      isStatic: true
+      isStatic: true,
+      render: {
+        sprite: {
+          texture: '/images/Sprite_AlienLegs1.png' // 128 x 128 cells
+        }
+      }
     });
 
-    var head = this.head = Bodies.circle(x + 58, y - 50, 50);
+    var head = this.head = Bodies.circle(x + 58, y - 50, 50, {
+      // collisionFilter: {
+      //   // group: 2 ** 22,
+      //   category: 2 ** 22,
+      //   mask: 2 ** 22
+      // },
+      inertia: 100000,
+      render: {
+        sprite: {
+          texture: '/images/Sprite_AlienHead1.png',
+          xScale: 0.25,
+          yScale: 0.25
+        }
+      }
+    });
 
     var torsoLegConstraint1 = Constraint.create({
       bodyA: torso.bodies[torso.bodies.length - 1],
@@ -90,15 +110,31 @@ class Player {
       }
     });
 
-    var headConstraint = Constraint.create({
+    var headConstraint1 = Constraint.create({
       bodyA: torso.bodies[1],
-      // pointA: { x: 400, y: 100 },
+      // pointA: {
+      //   x: 0,
+      //   y: -100
+      // },
       bodyB: head,
       // pointB: {
-      //   x: -38,
-      //   y: 0
+      //   x: 0,
+      //   y: -100
       // }
     });
+
+    // var headConstraint2 = Constraint.create({
+    //   bodyA: torso.bodies[1],
+    //   pointA: {
+    //     x: 0,
+    //     y: 0
+    //   },
+    //   bodyB: head,
+    //   pointB: {
+    //     x: 0,
+    //     y: 0
+    //   }
+    // });
 
     var group = Body.nextGroup(true);
 
@@ -141,6 +177,13 @@ class Player {
           group: group,
           category: 2 ** category++,
           mask: 2 ** category
+        },
+        render: {
+          sprite: {
+            texture: '/images/Sprite_AlienHand1.png',
+            xScale: 0.25,
+            yScale: 0.25
+          }
         }
       });
 
@@ -162,14 +205,20 @@ class Player {
       torso,
       legs,
       head,
+      arm,
+      hand,
       torsoLegConstraint1,
       torsoLegConstraint2,
       torsoLegConstraint3,
       torsoLegConstraint4,
       torsoLegConstraint5,
-      headConstraint,
-      arm,
-      hand
+      headConstraint1,
+      // headConstraint2
     ]);
+  }
+
+  move(impulseX, impulseY) {
+    this.legs.positionImpulse.x = impulseX;
+    this.legs.positionImpulse.y = impulseY;
   }
 }

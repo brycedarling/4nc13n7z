@@ -1,9 +1,25 @@
 # MUST HAVES
 
+* rendering player
+  * body
+  * arms
+  * fix head
+  * fix hand
+  * animate feet
+
+* sprite animation
+
+* combat - collisions and tracking damage
+
+* level - angled surfaces, platforms
+
+* goals, spawn points
+
+
 * multiplayer
-  * char select, enter name
-  * login to world, sync entities/game state
-  * events - character movement, combat, collection of heads
+  * syncing mouse movement hand attractor
+  * hand to body collision for enemies
+  * collection of heads
 * varying terrain
 * player movement on terrain
 * gravity to player
@@ -15,4 +31,8 @@
 
 # NICE TO HAVES
 
+* periodic syncing of x, y
+* bug with disconnecting? on client? and maybe server?
+* prettify char select, enter name
 * flight w/ jetpack
+* look in to dynamic constraints for head rotation

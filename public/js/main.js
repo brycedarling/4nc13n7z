@@ -14,9 +14,14 @@ var game = new Game();
   function tryLogin(race) {
     var url = form.attr('action');
 
-    $.post(url, {
-      name: name.val(),
-      race: race
+    $.ajax({
+      method: 'POST',
+      url: url,
+      contentType: 'application/json',
+      data: JSON.stringify({
+        name: name.val(),
+        race: race
+      })
     }).done(loginSucceeded).fail(loginFailed);
   }
 
@@ -32,8 +37,10 @@ var game = new Game();
     return false;
   });
 
-  function loginSucceeded() {
-    console.log("LOAD GAME!!!!");
+  function loginSucceeded(response) {
+    var playerId = JSON.parse(response).id;
+
+    game.playerId = playerId;
 
     login.fadeOut(function() {
       game.run();

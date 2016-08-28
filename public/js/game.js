@@ -2,7 +2,9 @@ class Game {
   constructor() {
     this.isRunning = false;
 
-    // this.entities = {};
+    this.entities = {};
+
+    this.playerPositions = {};
   }
 
   run() {
@@ -18,6 +20,34 @@ class Game {
 
     socket.on('move entity', this.moveEntity.bind(this));
 
+    // TODO: do this periodic syncing stuff
+    // socket.on('update player position', this.updatePlayerPosition.bind(this));
+
+    // var previousX = -1;
+    // var previousY = -1;
+
+    // setInterval(() => {
+    //   if (!this.player) return;
+    //
+    //   var x = this.player.legs.position.x;
+    //   var y = this.player.legs.position.y;
+    //
+    //   if (x == previousX && y == previousY) return;
+    //
+    //   previousX = x;
+    //   previousY = y;
+    //
+    //   var playerPosition = {
+    //     id: this.player.id,
+    //     x: x,
+    //     y: y
+    //   };
+    //
+    //   // console.log('update player position', playerPosition);
+    //
+    //   socket.emit('update player position', playerPosition);
+    // }, 1000);
+
     // run the engine
     Engine.run(engine);
 
@@ -28,45 +58,45 @@ class Game {
   addEntities(entities) {
     console.log('add entities', entities);
 
-    entities.forEach(entity => {
-      this.addEntity(entity);
+    for (var id in entities) {
+      this.addEntity(entities[id]);
+    }
+  }
+
+  addEntity(data) {
+    console.log('add entity', data);
+
+    var entity = new Player({
+      id: data.id,
+      x: data.x,
+      y: data.y
     });
+
+    if (entity.id == game.playerId) {
+      this.player = entity;
+    }
+
+    this.entities[entity.id] = entity;
   }
 
-  addEntity(entity) {
-    console.log('add entity', entity);
-
-    // var entity = {
-    //   id: entityId,
-    //   type: 'player',
-    //   race: 'alien', // TODO: fix
-    //   x: 0,
-    //   y: 0
-    // };
-
-    var player = this.player = new Player();
-
-    // this.entities[entity.id] = player;
-
-    //   console.log("ADD ENTITY");
-    //   this.entities[entity.id] = entity;
-    //   console.log(this.entities)
-  }
-
-  removeEntity(entity) {
+  removeEntity(data) {
     console.log("REMOVE ENTITY")
-    delete this.entities[entity.id];
-    console.log(this.entities)
+
+    delete this.entities[data.id];
   }
 
-  moveEntity(entity) {
-    // TODO: find entity by id, then move it
-    console.log('move entity', entity)
+  moveEntity(data) {
+    // console.log('move entity', data)
 
-    var impulseX = entity.x || 0;
-    var impulseY = entity.y || 0;
+    var entity = this.entities[data.id];
 
-    game.player.legs.positionImpulse.x = impulseX;
-    game.player.legs.positionImpulse.y = impulseY;
+    var impulseX = data.x || 0;
+    var impulseY = data.y || 0;
+
+    entity.move(impulseX, impulseY);
+  }
+
+  updatePlayerPosition(playerPosition) {
+    this.playerPositions[playerPosition.id] = playerPosition;
   }
 }

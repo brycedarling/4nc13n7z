@@ -26,7 +26,7 @@ window.addEventListener('keydown', function(e) {
   var impulseX = 0;
   var impulseY = 0;
 
-  var walkForceMagnitude = 10;
+  var walkForceMagnitude = 15;
 
   if (game.player.isMovingLeft) {
     impulseX -= walkForceMagnitude;
@@ -42,9 +42,9 @@ window.addEventListener('keydown', function(e) {
     impulseY -= jumpForceMagnitude;
   }
 
-  if (game && game.socket && (impulseX != 0 || impulseY != 0)) {
+  if (game && game.playerId && game.socket && (impulseX != 0 || impulseY != 0)) {
     game.socket.emit('move entity', {
-      id: 1, // TODO: fix to actual player entity id
+      id: game.playerId,
       x: impulseX,
       y: impulseY
     });

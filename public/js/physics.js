@@ -1,3 +1,34 @@
+// TODO
+// function fixEntityPositions() {
+//   for (var id in game.playerPositions) {
+//     if (!game.entities.hasOwnProperty(id)) return;
+//
+//     var playerPosition = game.playerPositions[id];
+//
+//     var player = game.entities[id];
+//
+//     if (player.legs.positionImpulse.x != 0 ||
+//       player.legs.positionImpulse.y != 0) return;
+//
+//     var impulseX = 0;
+//     var impulseY = 0;
+//
+//     if (player.legs.position.x < playerPosition.x) {
+//       impulseX += 1;
+//     } else if (player.legs.position.x > playerPosition.x) {
+//       impulseX -= 1;
+//     }
+//
+//     if (player.legs.position.y < playerPosition.y) {
+//       impulseY += 1;
+//     } else if (player.legs.position.y > playerPosition.y) {
+//       impulseY -= 1;
+//     }
+//
+//     player.move(impulseX, impulseY);
+//   }
+// }
+
 function handAttraction() {
   if (mouseX == null || mouseY == null) return;
 
@@ -50,6 +81,8 @@ var mouseAttractionCounter = 0;
 
 // sceneEvents.push(
 Events.on(engine, 'afterUpdate', function(e) {
+  // fixEntityPositions(); // TODO
+
   handAttraction();
 
   // tween the timescale for bullet time slow-mo
