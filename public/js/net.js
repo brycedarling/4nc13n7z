@@ -67,6 +67,12 @@ class Net {
     var impulseY = data.y || 0;
 
     entity.move(impulseX, impulseY);
+
+    if (data.isFacingRight) {
+      entity.faceRight();
+    } else {
+      entity.faceLeft();
+    }
   }
 
   punch(data) {

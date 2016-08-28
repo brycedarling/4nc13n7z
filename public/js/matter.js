@@ -8358,6 +8358,8 @@
 
                 if (sprite.facingRight) {
                   c.scale(-1, 1);
+                } else if (sprite.facingUp) {
+                  c.scale(1, -1);
                 }
 
                 c.drawImage(

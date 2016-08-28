@@ -31,10 +31,12 @@ class Keyboard {
 
     if (key == this.keys.left || key == this.keys.a) {
       player.isMovingLeft = true;
+      player.isFacingRight = false;
     }
 
     if (key == this.keys.right || key == this.keys.d) {
       player.isMovingRight = true;
+      player.isFacingRight = true;
     }
 
     if (key == this.keys.space) {
@@ -48,14 +50,10 @@ class Keyboard {
 
     if (player.isMovingLeft) {
       impulseX -= walkForceMagnitude;
-
-      player.faceLeft();
     }
 
     if (player.isMovingRight) {
       impulseX += walkForceMagnitude;
-
-      player.faceRight();
     }
 
     var jumpForceMagnitude = 10; // TODO: come from player
@@ -68,7 +66,8 @@ class Keyboard {
       game.net.socket.emit('move entity', {
         id: player.id,
         x: impulseX,
-        y: impulseY
+        y: impulseY,
+        isFacingRight: player.isFacingRight
       });
     }
   }

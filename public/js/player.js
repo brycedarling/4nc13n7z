@@ -6,12 +6,12 @@ class Player {
 
     this.id = options.id;
 
-    // states
     this.isMovingLeft = false;
     this.isMovingRight = false;
     this.isJumping = false;
+    this.isFacingRight = false;
 
-    this.bodies = this.createBodies(options)
+    this.bodies = this.createBodies(options);
   }
 
   createBodies(options) {
@@ -154,7 +154,8 @@ class Player {
         render.sprite = {
           texture: '/images/Sprite_AlienHand1.png',
           xScale: 0.25,
-          yScale: 0.25
+          yScale: 0.25,
+          yOffset: -0.3
         };
       }
 
@@ -252,10 +253,16 @@ class Player {
   }
 
   faceRight() {
-    this.arm.bodies[3].render.sprite.facingRight = true;
+    this.isFacingRight = true;
+    this.head.render.sprite.facingRight = true;
+    this.legs.render.sprite.facingRight = true;
+    this.arm.bodies[3].render.sprite.facingUp = true;
   }
 
   faceLeft() {
-    this.arm.bodies[3].render.sprite.facingRight = false;
+    this.isFacingRight = false;
+    this.head.render.sprite.facingRight = false;
+    this.legs.render.sprite.facingRight = false;
+    this.arm.bodies[3].render.sprite.facingUp = false;
   }
 }
