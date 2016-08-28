@@ -15,6 +15,8 @@ class Player {
   }
 
   createBodies(options) {
+    const playerId = options.id;
+
     var bodies = [];
 
     // create soft bodies
@@ -39,6 +41,10 @@ class Player {
 
     var torso = this.torso = Matter.Composites.softBody(x, y, columns, rows, columnGap, rowGap, true, particleRadius, particleOptions);
 
+    torso.bodies.forEach(body => {
+      body.playerId = playerId;
+    });
+
     var legs = this.legs = Matter.Bodies.rectangle(x + width / 2, 60 + (y + height) + torsoHeight, width, height, {
       isStatic: true,
       // density: 0.0001,
@@ -48,6 +54,8 @@ class Player {
         }
       }
     });
+
+    legs.playerId = playerId;
 
     var head = this.head = Matter.Bodies.circle(x + 58, y - 50, 50, {
       // collisionFilter: {
@@ -64,6 +72,9 @@ class Player {
         }
       }
     });
+
+    head.isHead = true;
+    head.playerId = playerId;
 
     var torsoLegConstraint1 = Matter.Constraint.create({
       bodyA: torso.bodies[torso.bodies.length - 1],
@@ -115,7 +126,7 @@ class Player {
       }
     });
 
-    var headConstraint1 = Matter.Constraint.create({
+    var headConstraint = this.headConstraint = Matter.Constraint.create({
       bodyA: torso.bodies[1],
       // pointA: {
       //   x: 0,
@@ -167,6 +178,11 @@ class Player {
         },
         render: render
       });
+
+      if (i == 3) {
+        body.isHand = true;
+      }
+      body.playerId = playerId;
 
       i++;
 
@@ -235,7 +251,7 @@ class Player {
       torsoLegConstraint3,
       torsoLegConstraint4,
       torsoLegConstraint5,
-      headConstraint1
+      headConstraint
     ];
 
     Matter.World.add(this.game.world, bodies);

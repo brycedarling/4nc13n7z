@@ -22,6 +22,8 @@ class Net {
     socket.on('move entity', this.moveEntity.bind(this));
 
     socket.on('punch', this.punch.bind(this));
+
+    socket.on('attack', this.attack.bind(this));
   }
 
   addEntities(entities) {
@@ -87,6 +89,14 @@ class Net {
       x: impulseX,
       y: impulseY
     });
+  }
+
+  attack(data) {
+    const game = this.game;
+
+    const victim = game.entities[parseInt(data.victim)];
+
+    Matter.World.remove(game.world, victim.headConstraint);
   }
 
   // TODO: for periodic syncing

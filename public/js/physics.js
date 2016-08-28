@@ -5,8 +5,12 @@ class Physics {
     this.lastMouseX = null;
     this.lastMouseY = null;
     this.attractionCounter = 0;
+
     this.isPunchReady = true;
     this.punchCounter = 0;
+    this.punchedAt = null;
+
+    this.combatCounter = 0;
 
     const events = this.events = [];
 
@@ -18,60 +22,113 @@ class Physics {
       // TODO: syncEntityPositions();
     });
 
+    const collisionStart = Matter.Events.on(game.engine, 'collisionStart', e => {
+      this.handleCombat(e);
+    });
+
+    // const collisionActive = Matter.Events.on(game.engine, 'collisionActive', e => {
+    //   console.log("COLLISION ACTIVE", e)
+    // });
+    //
+    // const collisionEnd = Matter.Events.on(game.engine, 'collisionEnd', e => {
+    //   console.log("COLLISION END", e)
+    // });
+
     events.push(afterUpdate);
+    events.push(collisionStart);
+    // events.push(collisionActive);
+    // events.push(collisionEnd);
   }
 
-  attractHand() {
+  handleCombat(e) {
+    if (this.punchedAt == null) return;
+
     const game = this.game;
 
-    const hand = game.player.hand;
+    const player = game.player;
 
-    if (!hand) return;
+    const playerId = player.id;
 
-    const mouse = game.mouse;
+    e.pairs.forEach(pair => {
+      // if ((pair.bodyA.isHand || pair.bodyB.isHand) && (pair.bodyA.isHead || pair.bodyB.isHead)) {
+      // console.log('head or hand')
+      // }
 
-    // every second reset mouse attraction
-    if (this.attractionCounter >= 60 * 1) {
-      // prevent if mouse hasn't moved in last second
-      if (mouse.x == this.lastMouseX && mouse.y == this.lastMouseY) {
-        return;
-      } else {
-        this.attractionCounter = 0;
-        return;
+      if (this.punchedAt != null &&
+        typeof pair.bodyA.playerId != 'undefined' &&
+        typeof pair.bodyB.playerId != 'undefined' &&
+        pair.bodyA.playerId != pair.bodyB.playerId) {
+        if (pair.bodyA.playerId != playerId || pair.bodyB.playerId != playerId) {
+          // if ((pair.bodyA.isHand || pair.bodyB.isHand) && (pair.bodyA.isHead || pair.bodyB.isHead)) {
+          var victimId = pair.bodyA.playerId != playerId ? pair.bodyA.playerId : pair.bodyB.playerId;
+
+          console.log("ATTACK!!!11", playerId, victimId)
+
+          if (game && game.net && game.net.socket && game.net.socket.connected) {
+            game.net.socket.emit('attack', {
+              attacker: playerId,
+              victim: victimId
+            });
+          }
+
+          this.punchedAt = null;
+          // }
+        }
       }
-    }
-
-    this.lastMouseX = mouse.x;
-    this.lastMouseY = mouse.y;
-
-    this.attractionCounter++;
-
-    const handPosition = hand.position;
-    var handX = handPosition.x
-    var handY = handPosition.y;
-
-    var impulseX = 0;
-    var impulseY = 0;
-
-    var forceMagnitude = 0.005;
-
-    if (mouse.x > handX) {
-      impulseX += forceMagnitude;
-    } else if (mouse.x < handX) {
-      impulseX -= forceMagnitude;
-    }
-
-    if (mouse.y > handY) {
-      impulseY += forceMagnitude;
-    } else if (mouse.y < handY) {
-      impulseY -= forceMagnitude;
-    }
-
-    Matter.Body.applyForce(hand, handPosition, {
-      x: impulseX,
-      y: impulseY
-    });
+    })
   }
+
+  // attractHand() {
+  //   const game = this.game;
+  //
+  //   const hand = game.player.hand;
+  //
+  //   if (!hand) return;
+  //
+  //   const mouse = game.mouse;
+  //
+  //   // every second reset mouse attraction
+  //   if (this.attractionCounter >= 60 * 1) {
+  //     // prevent if mouse hasn't moved in last second
+  //     if (mouse.x == this.lastMouseX && mouse.y == this.lastMouseY) {
+  //       return;
+  //     } else {
+  //       this.attractionCounter = 0;
+  //       return;
+  //     }
+  //   }
+  //
+  //   this.lastMouseX = mouse.x;
+  //   this.lastMouseY = mouse.y;
+  //
+  //   this.attractionCounter++;
+  //
+  //   const handPosition = hand.position;
+  //   var handX = handPosition.x
+  //   var handY = handPosition.y;
+  //
+  //   var impulseX = 0;
+  //   var impulseY = 0;
+  //
+  //   var forceMagnitude = 0.005;
+  //
+  //   if (mouse.x > handX) {
+  //     impulseX += forceMagnitude;
+  //   } else if (mouse.x < handX) {
+  //     impulseX -= forceMagnitude;
+  //   }
+  //
+  //   if (mouse.y > handY) {
+  //     impulseY += forceMagnitude;
+  //   } else if (mouse.y < handY) {
+  //     impulseY -= forceMagnitude;
+  //   }
+  //
+  //   Matter.Body.applyForce(hand, handPosition, {
+  //     x: impulseX,
+  //     y: impulseY
+  //   });
+  // }
 
   punchAttack() {
     const game = this.game;
@@ -96,6 +153,7 @@ class Physics {
     if (this.punchCounter >= 60 * 1) {
       this.punchCounter = 0;
       this.isPunchReady = true;
+      this.punchedAt = null;
     }
 
     this.punchCounter++;
@@ -104,9 +162,10 @@ class Physics {
       return;
     }
 
-    this.isPunchReady = false;
-
     console.log('PUNCH')
+
+    this.isPunchReady = false;
+    this.punchedAt = Date.now();
 
     const handPosition = hand.position;
     var handX = handPosition.x
@@ -129,12 +188,14 @@ class Physics {
       impulseY -= forceMagnitude;
     }
 
-    if (game.net.socket.connected && (impulseX != 0 || impulseY != 0)) {
-      game.net.socket.emit('punch', {
-        id: player.id,
-        x: impulseX,
-        y: impulseY
-      });
+    if (impulseX != 0 || impulseY != 0) {
+      if (game && game.net && game.net.socket && game.net.socket.connected) {
+        game.net.socket.emit('punch', {
+          id: player.id,
+          x: impulseX,
+          y: impulseY
+        });
+      }
     }
   }
 

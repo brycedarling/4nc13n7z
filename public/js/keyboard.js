@@ -62,13 +62,15 @@ class Keyboard {
       impulseY -= jumpForceMagnitude;
     }
 
-    if (game.net.socket.connected && (impulseX != 0 || impulseY != 0)) {
-      game.net.socket.emit('move entity', {
-        id: player.id,
-        x: impulseX,
-        y: impulseY,
-        isFacingRight: player.isFacingRight
-      });
+    if (impulseX != 0 || impulseY != 0) {
+      if (game && game.net && game.net.socket && game.net.socket.connected) {
+        game.net.socket.emit('move entity', {
+          id: player.id,
+          x: impulseX,
+          y: impulseY,
+          isFacingRight: player.isFacingRight
+        });
+      }
     }
   }
 
