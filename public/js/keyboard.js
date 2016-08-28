@@ -1,70 +1,91 @@
-var keys = {
-  'left': 37,
-  'right': 39,
-  'a': 65,
-  'd': 68,
-  'space': 32
-};
+class Keyboard {
+  constructor(game) {
+    this.game = game;
 
-window.addEventListener('keydown', function(e) {
-  if (!game.isRunning || !game.player) return;
+    this.keys = {
+      'left': 37,
+      'right': 39,
+      'a': 65,
+      'd': 68,
+      'space': 32
+    };
 
-  var keyCode = e.keyCode;
+    this.keysPressed = {};
 
-  if (keyCode == keys.left || keyCode == keys.a) {
-    game.player.isMovingLeft = true;
+    window.addEventListener('keydown', this.onKeyDown.bind(this));
+    window.addEventListener('keyup', this.onKeyUp.bind(this));
   }
 
-  if (keyCode == keys.right || keyCode == keys.d) {
-    game.player.isMovingRight = true;
+  isKeyPressed(key) {
+    return this.keysPressed[key];
   }
 
-  if (keyCode == keys.space) {
-    game.player.isJumping = true;
+  onKeyDown(e) {
+    this.keysPressed[e.keyCode];
+
+    const game = this.game;
+
+    const player = game.player;
+
+    const key = e.keyCode;
+
+    if (key == this.keys.left || key == this.keys.a) {
+      player.isMovingLeft = true;
+    }
+
+    if (key == this.keys.right || key == this.keys.d) {
+      player.isMovingRight = true;
+    }
+
+    if (key == this.keys.space) {
+      player.isJumping = true;
+    }
+
+    var impulseX = 0;
+    var impulseY = 0;
+
+    var walkForceMagnitude = 15; // TODO: come from player
+
+    if (player.isMovingLeft) {
+      impulseX -= walkForceMagnitude;
+    }
+
+    if (player.isMovingRight) {
+      impulseX += walkForceMagnitude;
+    }
+
+    var jumpForceMagnitude = 10; // TODO: come from player
+
+    if (player.isJumping) {
+      impulseY -= jumpForceMagnitude;
+    }
+
+    if (game.net.socket.connected && (impulseX != 0 || impulseY != 0)) {
+      game.net.socket.emit('move entity', {
+        id: player.id,
+        x: impulseX,
+        y: impulseY
+      });
+    }
   }
 
-  var impulseX = 0;
-  var impulseY = 0;
+  onKeyUp(e) {
+    delete this.keysPressed[e.keyCode];
 
-  var walkForceMagnitude = 15;
+    const player = this.game.player;
 
-  if (game.player.isMovingLeft) {
-    impulseX -= walkForceMagnitude;
+    const key = e.keyCode;
+
+    if (key == this.keys.left || key == this.keys.a) {
+      player.isMovingLeft = false;
+    }
+
+    if (key == this.keys.right || key == this.keys.d) {
+      player.isMovingRight = false;
+    }
+
+    if (key == this.keys.space) {
+      player.isJumping = false;
+    }
   }
-
-  if (game.player.isMovingRight) {
-    impulseX += walkForceMagnitude;
-  }
-
-  var jumpForceMagnitude = 10;
-
-  if (game.player.isJumping) {
-    impulseY -= jumpForceMagnitude;
-  }
-
-  if (game && game.playerId && game.socket && (impulseX != 0 || impulseY != 0)) {
-    game.socket.emit('move entity', {
-      id: game.playerId,
-      x: impulseX,
-      y: impulseY
-    });
-  }
-});
-
-window.addEventListener('keyup', function(e) {
-  if (!game.isRunning || !game.player) return;
-
-  var keyCode = e.keyCode;
-
-  if (keyCode == keys.left || keyCode == keys.a) {
-    game.player.isMovingLeft = false;
-  }
-
-  if (keyCode == keys.right || keyCode == keys.d) {
-    game.player.isMovingRight = false;
-  }
-
-  if (keyCode == keys.space) {
-    game.player.isJumping = false;
-  }
-});
+}

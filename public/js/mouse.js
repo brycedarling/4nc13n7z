@@ -1,11 +1,15 @@
-var mouseX = null;
-var mouseY = null;
+class MouseState {
+  constructor(game) {
+    this.game = game;
 
-window.addEventListener('mousemove', function(e) {
-  if (!game.isRunning) return;
+    this.x = null;
+    this.y = null;
+    this.attractionCounter = 0;
 
-  mouseX = e.clientX;
-  mouseY = e.clientY;
-
-  mouseAttractionCounter = 0;
-});
+    window.addEventListener('mousemove', e => {
+      this.x = e.clientX;
+      this.y = e.clientY;
+      this.attractionCounter = 0;
+    });
+  }
+}

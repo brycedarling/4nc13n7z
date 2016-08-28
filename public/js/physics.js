@@ -1,113 +1,89 @@
-// TODO
-// function fixEntityPositions() {
-//   for (var id in game.playerPositions) {
-//     if (!game.entities.hasOwnProperty(id)) return;
-//
-//     var playerPosition = game.playerPositions[id];
-//
-//     var player = game.entities[id];
-//
-//     if (player.legs.positionImpulse.x != 0 ||
-//       player.legs.positionImpulse.y != 0) return;
-//
-//     var impulseX = 0;
-//     var impulseY = 0;
-//
-//     if (player.legs.position.x < playerPosition.x) {
-//       impulseX += 1;
-//     } else if (player.legs.position.x > playerPosition.x) {
-//       impulseX -= 1;
-//     }
-//
-//     if (player.legs.position.y < playerPosition.y) {
-//       impulseY += 1;
-//     } else if (player.legs.position.y > playerPosition.y) {
-//       impulseY -= 1;
-//     }
-//
-//     player.move(impulseX, impulseY);
-//   }
-// }
+class Physics {
+  constructor(game) {
+    this.game = game;
 
-function handAttraction() {
-  if (mouseX == null || mouseY == null) return;
+    const events = this.events = [];
 
-  if (!game.player) return;
+    const afterUpdate = Matter.Events.on(game.engine, 'afterUpdate', e => {
+      this.attractHand();
 
-  var hand = game.player.hand;
-  var handX = hand.position.x
-  var handY = hand.position.y;
+      // TODO: syncEntityPositions();
+    });
 
-  var impulseX = 0;
-  var impulseY = 0;
-
-  var forceMagnitude = 0.005;
-
-  if (mouseX > handX) {
-    impulseX += forceMagnitude;
-  } else if (mouseX < handX) {
-    impulseX -= forceMagnitude;
+    events.push(afterUpdate);
   }
 
-  if (mouseY > handY) {
-    impulseY += forceMagnitude;
-  } else if (mouseY < handY) {
-    impulseY -= forceMagnitude;
+  attractHand() {
+    const game = this.game;
+
+    const hand = game.player.hand;
+
+    if (!hand) return;
+
+    const mouse = game.mouse;
+
+    mouse.attractionCounter += 1;
+
+    // every sec reset mouse attraction
+    if (mouse.attractionCounter >= 60 * 1) {
+      mouse.x = null;
+      mouse.y = null;
+    }
+
+    const handPosition = hand.position;
+    var handX = handPosition.x
+    var handY = handPosition.y;
+
+    var impulseX = 0;
+    var impulseY = 0;
+
+    var forceMagnitude = 0.005;
+
+    if (mouse.x > handX) {
+      impulseX += forceMagnitude;
+    } else if (mouse.x < handX) {
+      impulseX -= forceMagnitude;
+    }
+
+    if (mouse.y > handY) {
+      impulseY += forceMagnitude;
+    } else if (mouse.y < handY) {
+      impulseY -= forceMagnitude;
+    }
+
+    Matter.Body.applyForce(hand, handPosition, {
+      x: impulseX,
+      y: impulseY
+    });
   }
 
-  Body.applyForce(hand, hand.position, {
-    x: impulseX,
-    y: impulseY
-  });
-}
-
-// var explosion = function(engine) {
-//   var bodies = Composite.allBodies(engine.world);
-//
-//   for (var i = 0; i < bodies.length; i++) {
-//     var body = bodies[i];
-//
-//     if (!body.isStatic && body.position.y >= 500) {
-//       var forceMagnitude = 0.05 * body.mass;
-//
-//     }
-//   }
-// };
-//
-// var timeScaleTarget = 1,
-var mouseAttractionCounter = 0;
-
-// var sceneEvents = [];
-
-// sceneEvents.push(
-Events.on(engine, 'afterUpdate', function(e) {
-  // fixEntityPositions(); // TODO
-
-  handAttraction();
-
-  // tween the timescale for bullet time slow-mo
-  // engine.timing.timeScale += (timeScaleTarget - engine.timing.timeScale) * 0.05;
-
-  mouseAttractionCounter += 1;
-
-  // every 2 sec reset mouse attraction
-  if (mouseAttractionCounter >= 60 * 1) {
-    mouseX = null;
-    mouseY = null;
-  }
+  // TODO: syncEntityPositions() {
+  //   for (var id in game.playerPositions) {
+  //     if (!game.entities.hasOwnProperty(id)) return;
   //
-  //   // flip the timescale
-  //   if (timeScaleTarget < 1) {
-  //     timeScaleTarget = 1;
-  //   } else {
-  //     timeScaleTarget = 0.05;
+  //     var playerPosition = game.playerPositions[id];
+  //
+  //     var player = game.entities[id];
+  //
+  //     if (player.legs.positionImpulse.x != 0 ||
+  //       player.legs.positionImpulse.y != 0) return;
+  //
+  //     var impulseX = 0;
+  //     var impulseY = 0;
+  //
+  //     if (player.legs.position.x < playerPosition.x) {
+  //       impulseX += 1;
+  //     } else if (player.legs.position.x > playerPosition.x) {
+  //       impulseX -= 1;
+  //     }
+  //
+  //     if (player.legs.position.y < playerPosition.y) {
+  //       impulseY += 1;
+  //     } else if (player.legs.position.y > playerPosition.y) {
+  //       impulseY -= 1;
+  //     }
+  //
+  //     player.move(impulseX, impulseY);
   //   }
-  //
-  //   // create some random forces
-  //   explosion(engine);
-  //
-  //   // reset counter
-  //   counter = 0;
   // }
-});
-// );
+}

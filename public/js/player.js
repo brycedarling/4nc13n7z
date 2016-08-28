@@ -1,5 +1,7 @@
 class Player {
-  constructor(options) {
+  constructor(game, options) {
+    this.game = game;
+
     options = options || {};
 
     this.id = options.id;
@@ -33,9 +35,9 @@ class Player {
     var height = 100;
     var torsoHeight = rows * particleRadius;
 
-    var torso = this.torso = Composites.softBody(x, y, columns, rows, columnGap, rowGap, true, particleRadius, particleOptions);
+    var torso = this.torso = Matter.Composites.softBody(x, y, columns, rows, columnGap, rowGap, true, particleRadius, particleOptions);
 
-    var legs = this.legs = Bodies.rectangle(x + width / 2, 60 + (y + height) + torsoHeight, width, height, {
+    var legs = this.legs = Matter.Bodies.rectangle(x + width / 2, 60 + (y + height) + torsoHeight, width, height, {
       isStatic: true,
       render: {
         sprite: {
@@ -44,7 +46,7 @@ class Player {
       }
     });
 
-    var head = this.head = Bodies.circle(x + 58, y - 50, 50, {
+    var head = this.head = Matter.Bodies.circle(x + 58, y - 50, 50, {
       // collisionFilter: {
       //   // group: 2 ** 22,
       //   category: 2 ** 22,
@@ -60,7 +62,7 @@ class Player {
       }
     });
 
-    var torsoLegConstraint1 = Constraint.create({
+    var torsoLegConstraint1 = Matter.Constraint.create({
       bodyA: torso.bodies[torso.bodies.length - 1],
       // pointA: { x: 400, y: 100 },
       bodyB: legs,
@@ -70,7 +72,7 @@ class Player {
       }
     });
 
-    var torsoLegConstraint2 = Constraint.create({
+    var torsoLegConstraint2 = Matter.Constraint.create({
       bodyA: torso.bodies[torso.bodies.length - 2],
       // pointA: { x: 400, y: 100 },
       bodyB: legs,
@@ -80,7 +82,7 @@ class Player {
       // }
     });
 
-    var torsoLegConstraint3 = Constraint.create({
+    var torsoLegConstraint3 = Matter.Constraint.create({
       bodyA: torso.bodies[torso.bodies.length - 3],
       // pointA: { x: 400, y: 100 },
       bodyB: legs,
@@ -90,7 +92,7 @@ class Player {
       }
     });
 
-    var torsoLegConstraint4 = Constraint.create({
+    var torsoLegConstraint4 = Matter.Constraint.create({
       bodyA: torso.bodies[torso.bodies.length - 1],
       // pointA: { x: 400, y: 100 },
       bodyB: legs,
@@ -100,7 +102,7 @@ class Player {
       }
     });
 
-    var torsoLegConstraint5 = Constraint.create({
+    var torsoLegConstraint5 = Matter.Constraint.create({
       bodyA: torso.bodies[torso.bodies.length - 3],
       // pointA: { x: 400, y: 100 },
       bodyB: legs,
@@ -110,7 +112,7 @@ class Player {
       }
     });
 
-    var headConstraint1 = Constraint.create({
+    var headConstraint1 = Matter.Constraint.create({
       bodyA: torso.bodies[1],
       // pointA: {
       //   x: 0,
@@ -123,7 +125,7 @@ class Player {
       // }
     });
 
-    // var headConstraint2 = Constraint.create({
+    // var headConstraint2 = Matter.Constraint.create({
     //   bodyA: torso.bodies[1],
     //   pointA: {
     //     x: 0,
@@ -136,12 +138,12 @@ class Player {
     //   }
     // });
 
-    var group = Body.nextGroup(true);
+    var group = Matter.Body.nextGroup(true);
 
     var category = 0;
 
-    var arm = this.arm = Composites.stack(x + 50, y + 50, 3, 1, 10, 10, function(x, y) {
-      return Bodies.rectangle(x, y, 50, 20, {
+    var arm = this.arm = Matter.Composites.stack(x + 50, y + 50, 3, 1, 10, 10, function(x, y) {
+      return Matter.Bodies.rectangle(x, y, 50, 20, {
         collisionFilter: {
           group: group,
           category: 2 ** category++,
@@ -150,12 +152,12 @@ class Player {
       });
     });
 
-    Composites.chain(arm, 0.5, 0, -0.5, 0, {
+    Matter.Composites.chain(arm, 0.5, 0, -0.5, 0, {
       stiffness: 0.8,
       length: 2
     });
 
-    Composite.add(arm, Constraint.create({
+    Matter.Composite.add(arm, Matter.Constraint.create({
       bodyA: torso.bodies[4],
       // pointA: {
       //   x: torso.bodies[4].position.x,
@@ -169,7 +171,7 @@ class Player {
       stiffness: 0.8
     }));
 
-    var hand = this.hand = Bodies.circle(
+    var hand = this.hand = Matter.Bodies.circle(
       arm.bodies[2].position.x + 50,
       torso.bodies[4].position.y,
       30, {
@@ -187,7 +189,7 @@ class Player {
         }
       });
 
-    Composite.add(arm, Constraint.create({
+    Matter.Composite.add(arm, Matter.Constraint.create({
       bodyA: arm.bodies[2],
       pointA: {
         x: 20,
@@ -201,7 +203,7 @@ class Player {
       stiffness: 0.8
     }));
 
-    World.add(world, [
+    Matter.World.add(this.game.world, [
       torso,
       legs,
       head,

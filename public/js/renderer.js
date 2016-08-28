@@ -1,16 +1,6 @@
-// create a renderer
-var render = Render.create({
-  element: document.body,
-  engine: engine,
-  options: {
-    // background: '/images/BackgroundMoodConcept1.png',
-    showAngleIndicator: false,
-    wireframes: false
-  }
-});
-
-var canvas = render.canvas;
-var context = canvas.getContext('2d');
+// class Renderer {
+// var canvas = render.canvas;
+// var context = canvas.getContext('2d');
 
 // function getXMinMaxVertex(vertices) {
 //   var minVertex = vertices[0];
@@ -29,21 +19,21 @@ var context = canvas.getContext('2d');
 //   };
 // }
 
-function getColumnBodies(bodies, columnIndex) {
-  var column = [];
-  for (var i = columnIndex; i < bodies.length; i += 3) {
-    column.push(bodies[i]);
-  }
-  return column;
-}
-
-function getRowBodies(bodies, rowIndex) {
-  var row = [];
-  for (var i = rowIndex * 3; i < rowIndex * 3 + 3; i++) {
-    row.push(bodies[i]);
-  }
-  return row;
-}
+// function getColumnBodies(bodies, columnIndex) {
+//   var column = [];
+//   for (var i = columnIndex; i < bodies.length; i += 3) {
+//     column.push(bodies[i]);
+//   }
+//   return column;
+// }
+//
+// function getRowBodies(bodies, rowIndex) {
+//   var row = [];
+//   for (var i = rowIndex * 3; i < rowIndex * 3 + 3; i++) {
+//     row.push(bodies[i]);
+//   }
+//   return row;
+// }
 
 // (function render() {
 //   window.requestAnimationFrame(render);
@@ -122,3 +112,4 @@ function getRowBodies(bodies, rowIndex) {
 //   context.fillStyle = 'pink';
 //   context.fill();
 // })();
+// }

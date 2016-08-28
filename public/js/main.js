@@ -1,6 +1,6 @@
-var game = new Game();
-
 (function() {
+  var game = window.g = new Game();
+
   var login = $('#login');
 
   var form = $('form', login);
@@ -38,9 +38,7 @@ var game = new Game();
   });
 
   function loginSucceeded(response) {
-    var playerId = JSON.parse(response).id;
-
-    game.playerId = playerId;
+    game.player = JSON.parse(response);
 
     login.fadeOut(function() {
       game.run();
@@ -48,7 +46,8 @@ var game = new Game();
   }
 
   function loginFailed() {
-    console.log('LOGIN FAILED!!!');
+    // TODO: show to player
+    console.log('LOGIN FAILED!!! :(');
   }
 
   // TODO: remove
