@@ -1,23 +1,23 @@
 {
-  "name": "ancient_tech",
+  "name": "dinomash",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"Error: lol ain't nobody got time for tests in ludum dare\" && exit 1",
     "start": "node server.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/brycedarling/4nc13n7z.git"
+    "url": "git+https://github.com/brycedarling/dinomash.git"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/brycedarling/4nc13n7z/issues"
+    "url": "https://github.com/brycedarling/dinomash/issues"
   },
-  "homepage": "https://github.com/brycedarling/4nc13n7z#readme",
+  "homepage": "https://github.com/brycedarling/dinomash#readme",
   "dependencies": {
     "body-parser": "1.15.2",
     "express": "4.14.0",

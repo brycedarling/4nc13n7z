@@ -1,38 +1,48 @@
-# MUST HAVES
+# TODO
 
-* rendering player
-  * body
-  * arms
-  * fix head
-  * fix hand
-  * animate feet
+* player
+  * rendering player
+    * sprite animation
+    * body
+    * arms
+    * fix head
+    * fix hand
+    * animate feet
+  * picking up rigid body world objects
+  * destroying constraints with damage
+  * flight w/ jetpack that is like super jumping
+  * gravity
+  * look in to dynamic constraints for head rotation
 
-* sprite animation
+* level
+  * varying terrain - angled surfaces, platforms
+  * player movement on terrain
+  * goals, spawn points
+  * background
 
-* combat - collisions and tracking damage
-
-* level - angled surfaces, platforms
-
-* goals, spawn points
-
+* gameplay
+  * camera
+  * combat
+    * collisions
+    * health
+    * damage
+    * detach head
+    * collect head
+    * score with head
+    * scoring system
 
 * multiplayer
   * syncing mouse movement hand attractor
   * hand to body collision for enemies
   * collection of heads
-* varying terrain
-* player movement on terrain
-* gravity to player
-* effects - particles, playing sprite animation
-* combat with another player - impact, health, damage
-* picking up world objects - rigid bodies
-* destroying constraints with damage
-* scoring system
+  * periodic syncing of x, y
+  * bug with disconnecting? on client? and maybe server?
+  * how many players in one game? queue?
 
-# NICE TO HAVES
+* ui
+  * prettify char select, enter name
+  * scoreboard
+  * win screen etc
 
-* periodic syncing of x, y
-* bug with disconnecting? on client? and maybe server?
-* prettify char select, enter name
-* flight w/ jetpack
-* look in to dynamic constraints for head rotation
+* engine
+  * particle effects
