@@ -11,10 +11,12 @@ class Player {
     this.isMovingRight = false;
     this.isJumping = false;
 
-    this.createBodies(options)
+    this.bodies = this.createBodies(options)
   }
 
   createBodies(options) {
+    var bodies = [];
+
     // create soft bodies
     var particleOptions = {
       friction: 0.05,
@@ -39,6 +41,7 @@ class Player {
 
     var legs = this.legs = Matter.Bodies.rectangle(x + width / 2, 60 + (y + height) + torsoHeight, width, height, {
       isStatic: true,
+      // density: 0.0001,
       render: {
         sprite: {
           texture: '/images/Sprite_AlienLegs1.png' // 128 x 128 cells
@@ -142,14 +145,31 @@ class Player {
 
     var category = 0;
 
-    var arm = this.arm = Matter.Composites.stack(x + 50, y + 50, 3, 1, 10, 10, function(x, y) {
-      return Matter.Bodies.rectangle(x, y, 50, 20, {
+    var i = 0;
+
+    var arm = this.arm = Matter.Composites.stack(x + 50, y + 50, 4, 1, 10, 10, function(x, y) {
+      var render = {};
+
+      if (i == 3) {
+        render.sprite = {
+          texture: '/images/Sprite_AlienHand1.png',
+          xScale: 0.25,
+          yScale: 0.25
+        };
+      }
+
+      var body = Matter.Bodies.rectangle(x, y, 50, 20, {
         collisionFilter: {
           group: group,
           category: 2 ** category++,
           mask: 2 ** category
-        }
+        },
+        render: render
       });
+
+      i++;
+
+      return body;
     });
 
     Matter.Composites.chain(arm, 0.5, 0, -0.5, 0, {
@@ -171,56 +191,71 @@ class Player {
       stiffness: 0.8
     }));
 
-    var hand = this.hand = Matter.Bodies.circle(
-      arm.bodies[2].position.x + 50,
-      torso.bodies[4].position.y,
-      30, {
-        collisionFilter: {
-          group: group,
-          category: 2 ** category++,
-          mask: 2 ** category
-        },
-        render: {
-          sprite: {
-            texture: '/images/Sprite_AlienHand1.png',
-            xScale: 0.25,
-            yScale: 0.25
-          }
-        }
-      });
+    // var hand = this.hand = Matter.Bodies.circle(
+    //   arm.bodies[2].position.x + 50,
+    //   torso.bodies[4].position.y,
+    //   30, {
+    //     collisionFilter: {
+    //       group: group,
+    //       category: 2 ** category++,
+    //       mask: 2 ** category
+    //     },
+    //     render: {
+    //       sprite: {
+    //         texture: '/images/Sprite_AlienHand1.png',
+    //         xScale: 0.25,
+    //         yScale: 0.25
+    //       }
+    //     }
+    //   });
 
-    Matter.Composite.add(arm, Matter.Constraint.create({
-      bodyA: arm.bodies[2],
-      pointA: {
-        x: 20,
-        y: 0
-      },
-      bodyB: hand,
-      // pointB: {
-      //   x: -20,
-      //   y: 0
-      // },
-      stiffness: 0.8
-    }));
+    // Matter.Composite.add(arm, Matter.Constraint.create({
+    //   bodyA: arm.bodies[2],
+    //   pointA: {
+    //     x: 20,
+    //     y: 0
+    //   },
+    //   bodyB: hand,
+    //   // pointB: {
+    //   //   x: -20,
+    //   //   y: 0
+    //   // },
+    //   stiffness: 0.8
+    // }));
 
-    Matter.World.add(this.game.world, [
+    var bodies = [
       torso,
       legs,
       head,
       arm,
-      hand,
+      // hand,
       torsoLegConstraint1,
       torsoLegConstraint2,
       torsoLegConstraint3,
       torsoLegConstraint4,
       torsoLegConstraint5,
-      headConstraint1,
-      // headConstraint2
-    ]);
+      headConstraint1
+    ];
+
+    Matter.World.add(this.game.world, bodies);
+
+    return bodies;
+  }
+
+  removeBodies() {
+    Matter.World.remove(this.game.world, this.bodies);
   }
 
   move(impulseX, impulseY) {
     this.legs.positionImpulse.x = impulseX;
     this.legs.positionImpulse.y = impulseY;
+  }
+
+  faceRight() {
+    this.arm.bodies[3].render.sprite.facingRight = true;
+  }
+
+  faceLeft() {
+    this.arm.bodies[3].render.sprite.facingRight = false;
   }
 }

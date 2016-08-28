@@ -17,7 +17,7 @@
 * level
   * varying terrain - angled surfaces, platforms
   * player movement on terrain
-  * goals, spawn points
+  * goals
   * background
 
 * gameplay

@@ -9,13 +9,13 @@ class World {
     this.spawnPoint = 0;
 
     this.spawnPoints = [{
-      x: 200,
+      x: 150,
       y: 250
     }, {
       x: 300,
       y: 250
     }, {
-      x: 400,
+      x: 450,
       y: 250
     }];
   }
@@ -55,6 +55,10 @@ class World {
 
       // TODO: predict on client... lol
       io.emit('move entity', entity);
+    });
+
+    socket.on('punch', data => {
+      io.emit('punch', data);
     });
 
     // TODO: for periodic syncing

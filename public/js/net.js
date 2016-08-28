@@ -20,6 +20,8 @@ class Net {
     socket.on('remove entity', this.removeEntity.bind(this));
 
     socket.on('move entity', this.moveEntity.bind(this));
+
+    socket.on('punch', this.punch.bind(this));
   }
 
   addEntities(entities) {
@@ -49,9 +51,11 @@ class Net {
   removeEntity(data) {
     console.log("remove entity")
 
-    delete this.game.entities[data.id];
+    var entity = this.game.entities[data.id];
 
-    // TODO: actually remove from game world
+    entity.removeBodies();
+
+    delete this.game.entities[data.id];
   }
 
   moveEntity(data) {
@@ -63,6 +67,20 @@ class Net {
     var impulseY = data.y || 0;
 
     entity.move(impulseX, impulseY);
+  }
+
+  punch(data) {
+    var entity = this.game.entities[data.id];
+
+    var impulseX = data.x || 0;
+    var impulseY = data.y || 0;
+
+    const hand = entity.arm.bodies[3]; // entity.hand
+
+    Matter.Body.applyForce(hand, hand.position, {
+      x: impulseX,
+      y: impulseY
+    });
   }
 
   // TODO: for periodic syncing

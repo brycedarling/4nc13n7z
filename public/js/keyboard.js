@@ -48,10 +48,14 @@ class Keyboard {
 
     if (player.isMovingLeft) {
       impulseX -= walkForceMagnitude;
+
+      player.faceLeft();
     }
 
     if (player.isMovingRight) {
       impulseX += walkForceMagnitude;
+
+      player.faceRight();
     }
 
     var jumpForceMagnitude = 10; // TODO: come from player
