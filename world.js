@@ -66,6 +66,10 @@ class World {
       io.emit('attack', data);
     });
 
+    socket.on('restart', () => {
+      io.emit('restart');
+    });
+
     // TODO: for periodic syncing
     // socket.on('update player position', playerPosition => {
     //   console.log('update player position', playerPosition);

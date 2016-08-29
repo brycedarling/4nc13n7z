@@ -24,6 +24,10 @@ class Net {
     socket.on('punch', this.punch.bind(this));
 
     socket.on('attack', this.attack.bind(this));
+
+    socket.on('restart', function() {
+      window.location.href = '';
+    });
   }
 
   addEntities(entities) {
@@ -112,6 +116,12 @@ class Net {
       }
 
       Matter.World.remove(game.world, victim.headConstraint);
+
+      setTimeout(function() {
+        if (game && game.net && game.net.socket && game.net.socket.connected) {
+          game.net.socket.emit('restart');
+        }
+      }, 5000);
     } else {
       console.log('play ' + attacker.race + ' hit at', data.position);
 
