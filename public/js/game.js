@@ -14,11 +14,13 @@ class Game {
       element: document.body,
       engine: engine,
       options: {
-        // background: '/images/BackgroundMoodConcept1.png',
+        background: '/images/Background_Dinomash800x600.png',
         showAngleIndicator: false,
         wireframes: false
       }
     });
+
+    Matter.Events.on(render, 'beforeRender', this.beforeRender.bind(this));
 
     Matter.Events.on(render, 'afterRender', this.afterRender.bind(this));
 
@@ -43,7 +45,13 @@ class Game {
     Matter.Render.run(this.render);
   }
 
+  beforeRender(e) {}
+
   afterRender(e) {
+    // for (var id in this.entities) {
+    //   renderPlayerBody(this.render.context, this.entities[id]);
+    // }
+
     if (this.playAlienHitImpactAt) {
       alienHitImpactSprite.x = this.playAlienHitImpactAt.x;
       alienHitImpactSprite.y = this.playAlienHitImpactAt.y;
@@ -54,6 +62,45 @@ class Game {
       if (alienHitImpactSprite.isDone()) {
         alienHitImpactSprite.frameIndex = 0;
         this.playAlienHitImpactAt = null;
+      }
+    }
+
+    if (this.playAlienKillImpactAt) {
+      alienKillImpactSprite.x = this.playAlienKillImpactAt.x;
+      alienKillImpactSprite.y = this.playAlienKillImpactAt.y;
+
+      alienKillImpactSprite.update();
+      alienKillImpactSprite.render(this.render.context);
+
+      if (alienKillImpactSprite.isDone()) {
+        alienKillImpactSprite.frameIndex = 0;
+        this.playAlienKillImpactAt = null;
+      }
+    }
+
+    if (this.playDinoHitImpactAt) {
+      dinoHitImpactSprite.x = this.playDinoHitImpactAt.x;
+      dinoHitImpactSprite.y = this.playDinoHitImpactAt.y;
+
+      dinoHitImpactSprite.update();
+      dinoHitImpactSprite.render(this.render.context);
+
+      if (dinoHitImpactSprite.isDone()) {
+        dinoHitImpactSprite.frameIndex = 0;
+        this.playDinoHitImpactAt = null;
+      }
+    }
+
+    if (this.playDinoKillImpactAt) {
+      dinoKillImpactSprite.x = this.playDinoKillImpactAt.x;
+      dinoKillImpactSprite.y = this.playDinoKillImpactAt.y;
+
+      dinoKillImpactSprite.update();
+      dinoKillImpactSprite.render(this.render.context);
+
+      if (dinoKillImpactSprite.isDone()) {
+        dinoKillImpactSprite.frameIndex = 0;
+        this.playDinoKillImpactAt = null;
       }
     }
   }

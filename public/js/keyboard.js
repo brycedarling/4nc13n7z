@@ -25,6 +25,8 @@ class Keyboard {
 
     const game = this.game;
 
+    if (!game.isRunning) return;
+
     const player = game.player;
 
     const key = e.keyCode;
@@ -77,7 +79,11 @@ class Keyboard {
   onKeyUp(e) {
     delete this.keysPressed[e.keyCode];
 
-    const player = this.game.player;
+    const game = this.game;
+
+    if (!game.isRunning) return;
+
+    const player = game.player;
 
     const key = e.keyCode;
 

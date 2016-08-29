@@ -8347,10 +8347,14 @@
                 c.globalAlpha = part.render.opacity;
               }
 
-              if (part.render.sprite && part.render.sprite.texture && !options.wireframes) {
+              if (part.render.sprite && (part.render.sprite.texture || part.render.sprite.sheet) && !options.wireframes) {
                 // part sprite
-                var sprite = part.render.sprite,
+                var sprite = part.render.sprite;
+
+                var texture;
+                if (part.render.sprite.texture) {
                   texture = _getTexture(render, sprite.texture);
+                }
 
                 c.save();
                 c.translate(part.position.x, part.position.y);
@@ -8362,13 +8366,21 @@
                   c.scale(1, -1);
                 }
 
-                c.drawImage(
-                  texture,
-                  texture.width * -sprite.xOffset * sprite.xScale,
-                  texture.height * -sprite.yOffset * sprite.yScale,
-                  texture.width * sprite.xScale,
-                  texture.height * sprite.yScale
-                );
+                if (sprite.sheet) {
+                  c.translate(-65, -50);
+
+                  sprite.sheet.update();
+                  sprite.sheet.render(c);
+                } else {
+                  c.drawImage(
+                    texture,
+                    texture.width * -sprite.xOffset * sprite.xScale,
+                    texture.height * -sprite.yOffset * sprite.yScale,
+                    texture.width * sprite.xScale,
+                    texture.height * sprite.yScale
+                  );
+                }
+
 
                 // revert translation, hopefully faster than save / restore
                 // c.rotate(-part.angle);

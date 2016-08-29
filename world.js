@@ -10,13 +10,13 @@ class World {
 
     this.spawnPoints = [{
       x: 150,
-      y: 250
+      y: 230
     }, {
       x: 300,
-      y: 250
+      y: 230
     }, {
       x: 450,
-      y: 250
+      y: 230
     }];
   }
 
@@ -29,7 +29,8 @@ class World {
 
     const player = {
       id: socket.playerId,
-      race: socket.race,
+      name: socket.playerName,
+      race: socket.playerRace,
       x: spawnPoint.x,
       y: spawnPoint.y
     };

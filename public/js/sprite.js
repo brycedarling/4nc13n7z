@@ -55,15 +55,54 @@ Sprite.prototype.isDone = function() {
   return this.frameIndex == this.numberOfFrames - 1;
 };
 
+// Alien Sprites
+
 var alienWalkSprite = new Sprite({
-  image: '/images/Sprite_AlienWalk1.png',
-  numberOfFrames: 4,
-  ticksPerFrame: 4
+  image: '/images/Sprite_AlienWalkClean1.png',
+  numberOfFrames: 8,
+  ticksPerFrame: 4,
+  loop: true
 });
 
 var alienHitImpactSprite = new Sprite({
+  image: '/images/AlienHitImpact_sheet1.png',
+  numberOfFrames: 8,
+  ticksPerFrame: 3,
+  loop: false
+});
+
+var alienKillImpactSprite = new Sprite({
+  image: '/images/AlienHitImpactKill_sheet1.png',
+  numberOfFrames: 8,
+  ticksPerFrame: 3,
+  loop: false
+});
+
+// Dino Sprites
+
+var dinoWalkSprite = new Sprite({
+  image: '/images/Sprite_DinoWalkClean1.png',
+  numberOfFrames: 8,
+  ticksPerFrame: 4,
+  loop: true
+});
+
+var dinoHitImpactSprite = new Sprite({
   image: '/images/HitImpact_sheet1.png',
   numberOfFrames: 6,
   ticksPerFrame: 3,
   loop: false
 });
+
+var dinoKillImpactSprite = new Sprite({
+  image: '/images/HitImpactKill_sheet1.png',
+  numberOfFrames: 6,
+  ticksPerFrame: 3,
+  loop: false
+});
+
+var DINO_COLOR = '#b7f082';
+var DINO_ARM_COLOR = '#98e95c';
+
+var ALIEN_COLOR = '#c1a3ff';
+var ALIEN_ARM_COLOR = '#9785db';

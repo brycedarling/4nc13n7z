@@ -39,6 +39,8 @@ class Net {
 
     var player = new Player(this.game, {
       id: data.id,
+      name: data.name,
+      race: data.race,
       x: data.x,
       y: data.y
     });
@@ -94,17 +96,30 @@ class Net {
   attack(data) {
     const game = this.game;
 
+    const attacker = game.entities[parseInt(data.attacker)];
+
     const victim = game.entities[parseInt(data.victim)];
 
     victim.health -= data.damage;
 
     if (victim.health <= 0) {
-      console.log('play kill at', data.position)
+      console.log('play ' + attacker.race + ' kill at', data.position)
+
+      if (attacker.race == 'dino') {
+        game.playDinoKillImpactAt = data.position;
+      } else {
+        game.playAlienKillImpactAt = data.position;
+      }
+
       Matter.World.remove(game.world, victim.headConstraint);
     } else {
-      console.log('play impact at', data.position);
-      // TODO: alien or dino impact?
-      game.playAlienHitImpactAt = data.position;
+      console.log('play ' + attacker.race + ' hit at', data.position);
+
+      if (attacker.race == 'dino') {
+        game.playDinoHitImpactAt = data.position;
+      } else {
+        game.playAlienHitImpactAt = data.position;
+      }
     }
   }
 

@@ -49,8 +49,4 @@
     // TODO: show to player
     console.log('LOGIN FAILED!!! :(');
   }
-
-  // TODO: remove
-  name.val('foo');
-  tryLogin('alien');
 })();

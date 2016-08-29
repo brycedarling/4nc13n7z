@@ -1,7 +1,82 @@
-// class Renderer {
+function getColumnBodies(bodies, columnIndex) {
+  var column = [];
+  for (var i = columnIndex; i < bodies.length; i += 3) {
+    column.push(bodies[i]);
+  }
+  return column;
+}
+
+function getRowBodies(bodies, rowIndex) {
+  var row = [];
+  for (var i = rowIndex * 3; i < rowIndex * 3 + 3; i++) {
+    row.push(bodies[i]);
+  }
+  return row;
+}
+
+function renderPlayerBody(context, player) {
+  const playerTorso = player.torso;
+
+  var rowBodies = getRowBodies(playerTorso.bodies, 0);
+
+  context.beginPath();
+
+  var startVertex = rowBodies[0].vertices[14];
+
+  context.moveTo(startVertex.x, startVertex.y);
+
+  for (var i = 0; i < rowBodies.length; i++) {
+    var vertex = rowBodies[i].vertices[14];
+    context.lineTo(vertex.x, vertex.y);
+    // context.fillStyle = 'red';
+    // context.fillRect(vertex.x, vertex.y, 5, 5);
+  }
+
+  var columnBodies = getColumnBodies(playerTorso.bodies, 2);
+
+  for (var i = 0; i < columnBodies.length; i++) {
+    vertex = columnBodies[i].vertices[19];
+    context.lineTo(vertex.x, vertex.y);
+    // context.fillStyle = 'red';
+    // context.fillRect(vertex.x, vertex.y, 5, 5);
+  }
+
+  rowBodies = getRowBodies(playerTorso.bodies, 5);
+
+  for (var i = rowBodies.length - 1; i >= 0; i--) {
+    var vertex = rowBodies[i].vertices[5];
+    context.lineTo(vertex.x, vertex.y);
+    // context.fillStyle = 'red';
+    // context.fillRect(vertex.x, vertex.y, 5, 5);
+  }
+
+  columnBodies = getColumnBodies(playerTorso.bodies, 0);
+
+  for (var i = columnBodies.length - 1; i >= 0; i--) {
+    var vertex = columnBodies[i].vertices[10];
+    context.lineTo(vertex.x, vertex.y);
+    // context.fillStyle = 'red';
+    // context.fillRect(vertex.x, vertex.y, 5, 5);
+  }
+
+  context.lineTo(startVertex.x, startVertex.y);
+
+  const isAlien = player.race == 'alien';
+
+  context.strokeStyle = isAlien ? ALIEN_COLOR : DINO_COLOR;
+  context.stroke();
+  context.fillStyle = isAlien ? ALIEN_COLOR : DINO_COLOR;
+  context.fill();
+}
+
+// function renderPlayerArm(context, player) {
+//
+// }
+
+
 // var canvas = render.canvas;
 // var context = canvas.getContext('2d');
-
+//
 // function getXMinMaxVertex(vertices) {
 //   var minVertex = vertices[0];
 //   var maxVertex = vertices[0];
@@ -18,23 +93,9 @@
 //     max: maxVertex
 //   };
 // }
-
-// function getColumnBodies(bodies, columnIndex) {
-//   var column = [];
-//   for (var i = columnIndex; i < bodies.length; i += 3) {
-//     column.push(bodies[i]);
-//   }
-//   return column;
-// }
 //
-// function getRowBodies(bodies, rowIndex) {
-//   var row = [];
-//   for (var i = rowIndex * 3; i < rowIndex * 3 + 3; i++) {
-//     row.push(bodies[i]);
-//   }
-//   return row;
-// }
 
+//
 // (function render() {
 //   window.requestAnimationFrame(render);
 //
@@ -112,4 +173,3 @@
 //   context.fillStyle = 'pink';
 //   context.fill();
 // })();
-// }

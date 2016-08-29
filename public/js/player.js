@@ -5,6 +5,8 @@ class Player {
     options = options || {};
 
     this.id = options.id;
+    this.name = options.name;
+    this.race = options.race;
 
     this.health = 1000;
 
@@ -21,12 +23,15 @@ class Player {
 
     var bodies = [];
 
+    const isAlien = this.race == 'alien';
+
     // create soft bodies
     var particleOptions = {
       friction: 0.05,
       frictionStatic: 0.1,
       render: {
-        visible: true
+        fillStyle: isAlien ? ALIEN_COLOR : DINO_COLOR,
+        strokeStyle: isAlien ? ALIEN_COLOR : DINO_COLOR
       }
     };
 
@@ -41,7 +46,13 @@ class Player {
     var height = 100;
     var torsoHeight = rows * particleRadius;
 
-    var torso = this.torso = Matter.Composites.softBody(x, y, columns, rows, columnGap, rowGap, true, particleRadius, particleOptions);
+    var constraintOptions = {
+      render: {
+        visible: false
+      }
+    };
+
+    var torso = this.torso = Matter.Composites.softBody(x, y, columns, rows, columnGap, rowGap, true, particleRadius, particleOptions, constraintOptions);
 
     torso.bodies.forEach(body => {
       body.playerId = playerId;
@@ -52,7 +63,9 @@ class Player {
       // density: 0.0001,
       render: {
         sprite: {
-          texture: '/images/Sprite_AlienLegs1.png' // 128 x 128 cells
+          // texture: isAlien ?
+          // '/images/Sprite_AlienLegs1.png' : '/images/Sprite_DinoLegs1.png'
+          sheet: isAlien ? alienWalkSprite : dinoWalkSprite
         }
       }
     });
@@ -68,7 +81,8 @@ class Player {
       inertia: 100000,
       render: {
         sprite: {
-          texture: '/images/Sprite_AlienHead1.png',
+          texture: isAlien ?
+            '/images/Sprite_AlienHead1.png' : '/images/Sprite_DinoHead1.png',
           xScale: 0.25,
           yScale: 0.25
         }
@@ -85,6 +99,9 @@ class Player {
       pointB: {
         x: -38,
         y: 0
+      },
+      render: {
+        visible: false
       }
     });
 
@@ -96,6 +113,9 @@ class Player {
       //   x: 0,
       //   y: 0
       // }
+      render: {
+        visible: false
+      }
     });
 
     var torsoLegConstraint3 = Matter.Constraint.create({
@@ -105,6 +125,9 @@ class Player {
       pointB: {
         x: 38,
         y: 0
+      },
+      render: {
+        visible: false
       }
     });
 
@@ -115,6 +138,9 @@ class Player {
       pointB: {
         x: 38,
         y: 0
+      },
+      render: {
+        visible: false
       }
     });
 
@@ -125,6 +151,9 @@ class Player {
       pointB: {
         x: -38,
         y: 0
+      },
+      render: {
+        visible: false
       }
     });
 
@@ -139,6 +168,9 @@ class Player {
       //   x: 0,
       //   y: -100
       // }
+      render: {
+        visible: false
+      }
     });
 
     // var headConstraint2 = Matter.Constraint.create({
@@ -161,11 +193,14 @@ class Player {
     var i = 0;
 
     var arm = this.arm = Matter.Composites.stack(x + 50, y + 50, 4, 1, 10, 10, function(x, y) {
-      var render = {};
+      var render = {
+        fillStyle: isAlien ? ALIEN_ARM_COLOR : DINO_ARM_COLOR,
+        strokeStyle: isAlien ? ALIEN_ARM_COLOR : DINO_ARM_COLOR
+      };
 
       if (i == 3) {
         render.sprite = {
-          texture: '/images/Sprite_AlienHand1.png',
+          texture: isAlien ? '/images/Sprite_AlienHand1.png' : '/images/Sprite_DinoHand1.png',
           xScale: 0.25,
           yScale: 0.25,
           yOffset: -0.3
@@ -193,7 +228,11 @@ class Player {
 
     Matter.Composites.chain(arm, 0.5, 0, -0.5, 0, {
       stiffness: 0.8,
-      length: 2
+      length: 2,
+      render: {
+        fillStyle: isAlien ? ALIEN_ARM_COLOR : DINO_ARM_COLOR,
+        strokeStyle: isAlien ? ALIEN_ARM_COLOR : DINO_ARM_COLOR
+      }
     });
 
     Matter.Composite.add(arm, Matter.Constraint.create({
@@ -207,7 +246,12 @@ class Player {
         x: -20,
         y: 0
       },
-      stiffness: 0.8
+      stiffness: 0.8,
+      render: {
+        fillStyle: isAlien ? ALIEN_ARM_COLOR : DINO_ARM_COLOR,
+        strokeStyle: isAlien ? ALIEN_ARM_COLOR : DINO_ARM_COLOR,
+        lineWidth: 10
+      }
     }));
 
     // var hand = this.hand = Matter.Bodies.circle(
